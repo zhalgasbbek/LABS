@@ -1,0 +1,119 @@
+# Define the StringManipulator class
+class StringManipulator:
+    def __init__(self):
+        self.string = ""
+
+    def getString(self):
+        self.string = input("Enter a string: ")
+
+    def printString(self):
+        print(self.string.upper())
+
+
+
+
+# Define the Shape and Square classes
+class Shape:
+    def area(self):
+        return 0
+
+class Square(Shape):
+    def __init__(self, length):
+        self.length = length
+
+    def area(self):
+        return self.length ** 2
+
+# Define the Rectangle class
+class Rectangle(Shape):
+    def __init__(self, length, width):
+        self.length = length
+        self.width = width
+
+    def area(self):
+        return self.length * self.width
+
+# Define the Point class
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def show(self):
+        print(f"Point({self.x}, {self.y})")
+
+    def move(self, dx, dy):
+        self.x += dx
+        self.y += dy
+
+    def dist(self, other):
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
+# Define the Bank Account class
+class Account:
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self.balance = balance
+
+    def deposit(self, amount):
+        self.balance += amount
+        print(f"Deposited {amount}. New balance is {self.balance}.")
+
+    def withdraw(self, amount):
+        if amount > self.balance:
+            print("Insufficient funds.")
+        else:
+            self.balance -= amount
+            print(f"Withdrew {amount}. New balance is {self.balance}.")
+
+# Program to filter prime numbers
+def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+def filter_primes(numbers):
+    return list(filter(lambda x: is_prime(x), numbers))
+
+# Example usage
+# Uncomment the following lines to test the classes and functions
+
+# Test StringManipulator
+"""
+sm = StringManipulator()
+ sm.getString()
+ sm.printString()
+ """
+
+# Test Shape and Square
+"""
+square = Square(4)
+print(square.area())
+"""
+
+# Test Rectangle
+"""rectangle = Rectangle(3, 4)
+ print(rectangle.area())
+"""
+# Test Point
+"""
+ point1 = Point(0, 0)
+ point2 = Point(3, 4)
+ point1.show()
+ point2.show()
+ print(point1.dist(point2))
+ """
+
+ #Test Account
+"""acc = Account("Jn Doe", 100)
+acc.deposit(50)
+acc.withdraw(20)
+"""
+
+ #Test prime number filtering
+""" numbers = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+ print(filter_primes(numbers))
+ """
