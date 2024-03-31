@@ -19,8 +19,8 @@ running =  True
 
 while running :
     
-    screen.fill((84, 172, 209))
-    screen.blit(square , (0,0))
+    screen.fill((84, 5, 209))
+    screen.blit(square , (0,40))
     screen.blit(player , (200,120))
     screen.blit(text_surface , (200,120))
     

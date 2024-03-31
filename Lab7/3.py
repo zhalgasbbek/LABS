@@ -7,6 +7,7 @@ clock = pygame.time.Clock()
 x = 40
 y = 40
 
+
 running = True
 while running:
     
@@ -27,7 +28,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False 
-    clock.tick(60) 
+    clock.tick(27) 
 
 pygame.quit()
 
