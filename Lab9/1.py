@@ -1,6 +1,7 @@
+# Imports
 import pygame
-import sys #sys для системных функций,
-from pygame.locals import * #импортирует константы и классы из pygame.
+import sys
+from pygame.locals import *
 import random, time
 
 # Initialzing
@@ -8,7 +9,7 @@ pygame.init()
 
 # Setting up FPS
 FPS = 60
-FramePerSec = pygame.time.Clock() #это объект часов, используемый для контроля частоты кадров.
+FramePerSec = pygame.time.Clock()
 
 # Creating colors
 BLUE = (0, 0, 255)
@@ -39,33 +40,31 @@ pygame.display.set_caption("Game")
 pygame.mixer.music.load('C:\MyPythonProjects\TSIS\PyGame/files/background.mp3')
 pygame.mixer.music.play(-1) # i use -1 to loop the music
 
-#Enemy, который наследуется от класса pygame.sprite.Sprite. 
-# Это означает, что класс Enemy будет иметь все свойства и методы класса pygame.sprite.Sprite, что позволит его использовать вместе с другими спрайтами в группах спрайтов.
 # Create a sprite group Enemy
 class Enemy(pygame.sprite.Sprite):
     # constructor
-    def __init__(self): #Это метод-конструктор класса Enemy, который вызывается при создании нового экземпляра класса Enemy.
-        super().__init__() #выполнить инициализацию базовых свойств спрайта.
+    def __init__(self):
+        super().__init__()
         self.image = pygame.image.load("C:\MyPythonProjects\TSIS\PyGame/files/Enemy.png")
-        self.rect = self.image.get_rect()   # get_rect - возвращает прямоугольник,#: Эта строка создает прямоугольную область (Rect), соответствующую изображению врага.
+        self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
     # move method
     def move(self):
-        global SCORE #используется для подсчета очков в игре
-        self.rect.move_ip(0, SPEED) # перемещает прямоугольную область объекта врага вниз по экрану на расстояние SPEED
+        global SCORE
+        self.rect.move_ip(0, SPEED)
         if (self.rect.top > 600):
             SCORE += 1
             self.rect.top = 0
             self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
 
 # Create a sprite group Player
-class Player(pygame.sprite.Sprite): #Создается группа спрайтов для игрока.
+class Player(pygame.sprite.Sprite):
     # constructor
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("C:\MyPythonProjects\TSIS\PyGame/files/Player.png")
-        self.rect = self.image.get_rect() #определяется его прямоугольная область
-        self.rect.center = (160, 520) #начальное положение.
+        self.rect = self.image.get_rect()
+        self.rect.center = (160, 520)
     # move method
     def move(self):
         pressed_keys = pygame.key.get_pressed()
@@ -81,7 +80,7 @@ class Coin(pygame.sprite.Sprite):
     # constructor
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load('C:\MyPythonProjects\TSIS\PyGame/files/coin.png')
+        self.image = pygame.image.load("C:\MyPythonProjects\TSIS\PyGame/files/coin.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
 
@@ -89,33 +88,39 @@ class Coin(pygame.sprite.Sprite):
         self.rect.top = 0
         self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
     def move(self):
-        global coin2
         self.rect.move_ip(0, SPEED)
         if self.rect.top > SCREEN_HEIGHT:
             self.reset()
 
+class BigCoin(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load('C:\MyPythonProjects\TSIS\PyGame/files/bigcoin.png')
+        self.rect = self.image.get_rect()
+    def move(self):
+        self.rect.move_ip(0, SPEED)
 
-
-# Создаются экземпляры классов игрока, врага и монеты.
+# Setting up Sprites
 P1 = Player()
 E1 = Enemy()
 C1 = Coin()
+B1 = BigCoin()
 
-# Creating Sprites Groups  Группы спрайтов в Pygame позволяют легко управлять несколькими спрайтами одновременно.
-# Они предоставляют удобные методы для обновления, отображения и проверки столкновений всех спрайтов в группе.
+# Creating Sprites Groups
 enemies = pygame.sprite.Group()
 enemies.add(E1)
-#Это позволяет группе enemies отслеживать и управлять этим конкретным вражеским спрайтом.
+
 coins = pygame.sprite.Group()
 coins.add(C1)
 
+big_coins = pygame.sprite.Group()
+big_coins.add(B1)
+
 all_sprites = pygame.sprite.Group()
-all_sprites.add(P1, E1, C1)
+all_sprites.add(P1, C1, B1, E1)
 # Adding a new User event
-INC_SPEED = pygame.USEREVENT + 1 #Создается пользовательское событие для увеличения скорости врагов.
-
-pygame.time.set_timer(INC_SPEED, 1000) #Оно будет вызываться каждую секунду (1000 миллисекунд).
-
+INC_SPEED = pygame.USEREVENT + 1
+pygame.time.set_timer(INC_SPEED, 1000)
 
 while True:
     for event in pygame.event.get():
@@ -132,20 +137,31 @@ while True:
     counter = font_small.render(str(coin2), True, BLACK)
     DISPLAYSURF.blit(counter, (380, 10))
 
-    # Moves and Re-draws all Sprites
-    for entity in all_sprites:
-        DISPLAYSURF.blit(entity.image, entity.rect)
-        entity.move()
-
     # Check for collision with coins
     collided_coins = pygame.sprite.spritecollide(P1, coins, True)
     for coin in collided_coins:
         coin2 += 1
-        new_coin = Coin() #: Создает новый экземпляр класса монеты.
-        coins.add(new_coin) #Добавляет новую монету в группу монет coins.
-        all_sprites.add(new_coin) #Добавляет новую монету в группу всех спрайтов all_sprites, чтобы она отображалась на экране.
+        new_coin = Coin()
+        coins.add(new_coin)
+        all_sprites.add(new_coin)
         new_coin.rect.top = 0
         new_coin.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
+        if coin2 % 10 == 0:
+            SPEED += 1
+            new_coin = BigCoin()
+            big_coins.add(new_coin)
+            all_sprites.add(new_coin)
+            new_coin.rect.top = 0
+            new_coin.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
+    big_coins_collided = pygame.sprite.spritecollide(P1, big_coins, True)
+    for big_coin in big_coins_collided:
+        coin2 += 5
+        big_coin.kill()
+
+    # Moves and Re-draws all Sprites
+    for entity in all_sprites:
+        DISPLAYSURF.blit(entity.image, entity.rect)
+        entity.move()
 
     # To be run if collision occurs between Player and Enemy
     if pygame.sprite.spritecollideany(P1, enemies):
@@ -165,6 +181,3 @@ while True:
 
     pygame.display.update()
     FramePerSec.tick(FPS)
-    
-    
-    
