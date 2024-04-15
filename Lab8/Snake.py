@@ -21,8 +21,8 @@ class Snake:
         self.new_block = False
 
     def draw_snake(self):
-        for block in self.body:
-            x_pos = int(block.x * cell_size)
+        for block in self.body: 
+            x_pos = int(block.x * cell_size) #Здесь определяется позиция по оси X блока в пикселях
             y_pos = int(block.y * cell_size)
             block_rect = pygame.Rect(x_pos, y_pos, cell_size, cell_size)
             pygame.draw.rect(screen,("Black"),block_rect)
@@ -43,18 +43,20 @@ class Snake:
 
 class Main:
     def __init__(self):
-        self.snake = Snake()
-        self.fruit = Fruit()
-        self.fruits_eaten = 0
-        self.timer_interval = 150 
-        self.level = 1
+        self.snake = Snake() # Создание экземпляра класса Snake (змейка)
+        self.fruit = Fruit() # Создание экземпляра класса Fruit (фрукт)
+        self.fruits_eaten = 0 # Количество съеденных фруктов
+        self.timer_interval = 150 # Интервал таймера
+        self.level = 1 # Текущий уровень игры
 
-    def update(self):
+    def update(self): #обновляет состояние игры
         self.snake.move_snake()
         self.check_collision()
+        
+        
         self.check_fail()
 
-    def draw_elements(self):
+    def draw_elements(self):  #отрисовку всех элементов игры: травы, фрукта, змейки, счета и уровня.
         self.draw_grass()
         self.fruit.draw_fruit()
         self.snake.draw_snake()

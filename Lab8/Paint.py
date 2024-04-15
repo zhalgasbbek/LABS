@@ -34,7 +34,7 @@ def drawDisplay():
     return [blue, red, green, yellow, black, purple, eraser], [rect, circ]
 
 def drawPaint(paints):
-    for paint in paints:
+    for paint in paints: # представляет собой список элементов, содержащих информацию о том, что нужно нарисовать на экране
         if paint[2] == 1:
             pygame.draw.circle(screen, paint[0] , paint[1], 15) # Draw Paint
         elif paint[2] == 0:
@@ -49,37 +49,37 @@ def draw():
 
 run = True
 while run:
-    timer.tick(fps) # Set FPS
-    screen.fill('white') # Fill Screen
-    colors, shape = drawDisplay() # Draw Display
+    timer.tick(fps) # Устанавливаем FPS
+    screen.fill('white') # Заполняем экран белым цветом
 
-    mouse = pygame.mouse.get_pos() # Get Mouse Position
-    draw()
+    colors, shape = drawDisplay() # Рисуем интерфейс выбора цвета и формы
+
+    mouse = pygame.mouse.get_pos() # Получаем позицию мыши
+    draw() # Рисуем выбранную форму, если мышь находится в области рисования
     
-    click = pygame.mouse.get_pressed()[0] # Get Mouse Button Pressed
-    if click and mouse[1] > 100:
-        painting.append((activeColor, mouse, activeShape)) # Add Mouse Position to List
-    drawPaint(painting)
+    click = pygame.mouse.get_pressed()[0] # Получаем информацию о нажатии левой кнопки мыши
+    if click and mouse[1] > 100: # Если левая кнопка мыши нажата и мышь находится в области рисования
+        painting.append((activeColor, mouse, activeShape)) # Добавляем текущую позицию мыши и выбранную форму в список для рисования
 
-    for event in pygame.event.get(): # Set quit event
-        if event.type == pygame.QUIT:
-            run = False
+    drawPaint(painting) # Рисуем уже нарисованные фигуры
 
-        if event.type == pygame.KEYDOWN: # Set quit event
-            if event.key == pygame.K_ESCAPE:
-                run = False
+    for event in pygame.event.get(): # Обрабатываем события
+        if event.type == pygame.QUIT: # Если событие - закрытие окна
+            run = False # Завершаем программу
 
-        if event.type == pygame.KEYDOWN: # Set quit event
-            if event.key == pygame.K_SPACE:
-                painting = []
+        if event.type == pygame.KEYDOWN: # Если нажата клавиша
+            if event.key == pygame.K_ESCAPE: # Если нажата клавиша ESC
+                run = False # Завершаем программу
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            for i in colors:
-                if i[0].collidepoint(event.pos):
-                    activeColor = i[1]
-            for i in shape:
-                if i[0].collidepoint(event.pos):
-                    activeShape = i[1]
-    
+            if event.key == pygame.K_SPACE: # Если нажата клавиша SPACE
+                painting = [] # Очищаем список нарисованных фигур
 
-    pygame.display.flip() # Update Screen
+        if event.type == pygame.MOUSEBUTTONDOWN: # Если произошло нажатие кнопки мыши
+            for i in colors: # Проверяем каждый цвет
+                if i[0].collidepoint(event.pos): # Если позиция клика попадает в область кнопки цвета
+                    activeColor = i[1] # Устанавливаем выбранный цвет
+            for i in shape: # Проверяем каждую форму
+                if i[0].collidepoint(event.pos): # Если позиция клика попадает в область кнопки формы
+                    activeShape = i[1] # Устанавливаем выбранную форму
+
+    pygame.display.flip() # Обновляем экран
